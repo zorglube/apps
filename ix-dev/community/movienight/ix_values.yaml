@@ -1,7 +1,7 @@
 images:
   image:
-    repository: ghcr.io/zorchenhimer/movienight
-    tag: master
+    repository: ruepp/movienight
+    tag: latest
 consts:
   npm_container_name: movienight
   data_path: /data
