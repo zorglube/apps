@@ -6,7 +6,7 @@ categories:
 - media
 changelog_url: https://github.com/zorglube/MovieNight
 date_added: '2026-07-30'
-description: single-instance streaming server with chat
+description: Single-instance streaming server with chat. Befor first run have a look on the configuration capabilities => https://github.com/zorglube/MovieNight
 home: https://github.com/zorglube/MovieNight
 host_mounts: []
 icon: https://media.sys.truenas.net/apps/movienight/icons/movienight.png
