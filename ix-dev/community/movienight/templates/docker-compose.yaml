@@ -4,7 +4,7 @@
 {% set perm_config = {"uid": values.run_as.user, "gid": values.run_as.group, "mode": "check"} %}
 
 {% do c1.add_caps(["SETUID", "SETGID", "CHOWN", "FOWNER", "DAC_OVERRIDE"]) %}
-{% do c1.healthcheck.set_test("curl", {"port": values.consts.internal_web_port}) %}
+{% do c1.healthcheck.set_test("curl", {"port": values.consts.internal_web_port, "path": "/"}) %}
 
 {% do c1.environment.add_user_envs(values.movienight.additional_envs) %}
 
