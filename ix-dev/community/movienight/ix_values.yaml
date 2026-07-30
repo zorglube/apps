@@ -3,7 +3,7 @@ images:
     repository: ruepp/movienight
     tag: latest
 consts:
-  npm_container_name: movienight
+  app_container_name: movienight
   data_path: /data
   notes_body: |
     ## See the documentation on GitHub
