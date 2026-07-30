@@ -5,6 +5,8 @@ groups:
     description: Configure User and Group for MovieNight
   - name: Network Configuration
     description: Configure Network for MovieNight
+  - name: Storage Configuration
+    description: Configure Storage for MoviNight
   - name: Labels Configuration
     description: Configure Labels for MovieNight
 
@@ -57,7 +59,7 @@ questions:
           description: The user id that MovieNight files will be owned by.
           schema:
             type: int
-            min: 0
+            min: 568
             default: 568
             required: true
         - variable: group
@@ -65,7 +67,7 @@ questions:
           description: The group id that MovieNight files will be owned by.
           schema:
             type: int
-            min: 0
+            min: 568
             default: 568
             required: true
 
@@ -80,6 +82,7 @@ questions:
           description: The port for MovieNight WebUI
           schema:
             type: dict
+            show_if: [["host_network", "=", false]]
             attrs:
               - variable: bind_mode
                 label: Port Bind Mode
@@ -106,7 +109,7 @@ questions:
                   type: int
                   show_if: [["bind_mode", "=", "published"]]
                   default: 8089
-                  min: 1
+                  min: 1024
                   max: 65535
                   required: true
               - variable: host_ips
@@ -126,9 +129,10 @@ questions:
                           - definitions/node_bind_ip
         - variable: http_port
           label: HTTP Port
-          description: The port for MovieNight HTTP
+          description: The port for MovieNight HTTP Front-End
           schema:
             type: dict
+            show_if: [["host_network", "=", false]]
             attrs:
               - variable: bind_mode
                 label: Port Bind Mode
@@ -155,7 +159,7 @@ questions:
                   type: int
                   show_if: [["bind_mode", "=", "published"]]
                   default: 8089
-                  min: 1
+                  min: 1024
                   max: 65535
                   required: true
               - variable: host_ips
@@ -178,6 +182,7 @@ questions:
           description: The port for MovieNight to impote the RTMP stream
           schema:
             type: dict
+            show_if: [["host_network", "=", false]]
             attrs:
               - variable: bind_mode
                 label: Port Bind Mode
@@ -204,7 +209,7 @@ questions:
                   type: int
                   show_if: [["bind_mode", "=", "published"]]
                   default: 1935
-                  min: 1
+                  min: 1024
                   max: 65535
                   required: true
               - variable: host_ips
@@ -222,71 +227,6 @@ questions:
                         required: true
                         $ref:
                           - definitions/node_bind_ip
-
-        - variable: additional_ports
-          label: Additional Ports
-          schema:
-            type: list
-            items:
-              - variable: port
-                label: Port
-                schema:
-                  type: dict
-                  attrs:
-                    - variable: bind_mode
-                      label: Port Bind Mode
-                      description: |
-                        The port bind mode.</br>
-                        - Publish: The port will be published on the host for external access.</br>
-                        - Expose: The port will be exposed for inter-container communication.</br>
-                      schema:
-                        type: string
-                        default: "published"
-                        enum:
-                          - value: "published"
-                            description: Publish port on the host for external access
-                          - value: "exposed"
-                            description: Expose port for inter-container communication
-                    - variable: port_number
-                      label: Port Number
-                      schema:
-                        type: int
-                        min: 1
-                        max: 65535
-                        required: true
-                    - variable: container_port
-                      label: Container Port
-                      schema:
-                        type: int
-                        min: 1
-                        max: 65535
-                        required: true
-                    - variable: protocol
-                      label: Protocol
-                      schema:
-                        type: string
-                        required: true
-                        default: "tcp"
-                        enum:
-                          - value: "tcp"
-                            description: TCP
-                          - value: "udp"
-                            description: UDP
-                    - variable: host_ips
-                      label: Host IPs
-                      description: IPs on the host to bind this port
-                      schema:
-                        type: list
-                        show_if: [["bind_mode", "=", "published"]]
-                        default: []
-                        items:
-                          - variable: host_ip
-                            label: Host IP
-                            schema:
-                              type: string
-                              required: true
-                              $ref:
-                                - definitions/node_bind_ip
 
   - variable: storage
     label: ""
@@ -467,61 +407,32 @@ questions:
                               type: dict
                               show_if: [["acl_enable", "=", true]]
                               attrs: []
-                    - variable: cifs_config
-                      label: SMB Configuration
-                      description: The configuration for the SMB dataset.
+                    - variable: host_path_config
+                      label: Host Path Configuration
                       schema:
                         type: dict
-                        show_if: [["type", "=", "cifs"]]
+                        show_if: [["type", "=", "host_path"]]
                         attrs:
-                          - variable: server
-                            label: Server
-                            description: The server to mount the SMB share.
+                          - variable: acl_enable
+                            label: Enable ACL
+                            description: Enable ACL for the storage.
                             schema:
-                              type: string
-                              required: true
+                              type: boolean
+                              default: false
+                          - variable: acl
+                            label: ACL Configuration
+                            schema:
+                              type: dict
+                              show_if: [["acl_enable", "=", true]]
+                              attrs: []
+                              $ref:
+                                - "normalize/acl"
                           - variable: path
-                            label: Path
-                            description: The path to mount the SMB share.
+                            label: Host Path
+                            description: The host path to use for storage.
                             schema:
-                              type: string
-                              required: true
-                          - variable: username
-                            label: Username
-                            description: The username to use for the SMB share.
-                            schema:
-                              type: string
-                              required: true
-                          - variable: password
-                            label: Password
-                            description: The password to use for the SMB share.
-                            schema:
-                              type: string
-                              required: true
-                              private: true
-                          - variable: domain
-                            label: Domain
-                            description: The domain to use for the SMB share.
-                            schema:
-                              type: string
-                    - variable: nfs_config
-                      label: NFS Configuration
-                      description: The configuration for the NFS dataset.
-                      schema:
-                        type: dict
-                        show_if: [["type", "=", "nfs"]]
-                        attrs:
-                          - variable: server
-                            label: Server
-                            description: The server to mount the NFS share.
-                            schema:
-                              type: string
-                              required: true
-                          - variable: path
-                            label: Path
-                            description: The path to mount the NFS share.
-                            schema:
-                              type: string
+                              type: hostpath
+                              show_if: [["acl_enable", "=", false]]
                               required: true
   - variable: labels
     label: ""
