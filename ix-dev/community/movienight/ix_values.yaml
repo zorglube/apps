@@ -4,9 +4,9 @@ images:
     tag: latest
 consts:
   app_container_name: movienight
-  data_path: /data
-  default_http_port: 8089
-  default_rtmp_port: 1935
+  internal_data_path: /data
+  internal_http_port: 8089
+  internal_rtmp_port: 1935
   notes_body: |
     ## See the documentation on GitHub
     
