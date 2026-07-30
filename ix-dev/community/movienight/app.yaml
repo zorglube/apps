@@ -21,7 +21,7 @@ maintainers:
   url: https://www.truenas.com
 name: movienight
 run_as_context:
-- description: MovieNight runs asany non-root user.
+- description: MovieNight run as non-root user.
   gid: 568
   group_name: movienight
   uid: 568
